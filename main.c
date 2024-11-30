@@ -3,11 +3,28 @@
 #include <stdio.h>
 
 
-void makeWall() // make it point to an array
+void makeWall(int array[8][8], SDL_Renderer *renderer){
+
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            if (array[i][j] == 1 ){
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                SDL_Rect rect = {160 * j, 100 * i, 160, 100};
+                SDL_RenderFillRect(renderer, &rect);               //print wall
+            }
+            else {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_Rect rect = {160 * j, 100 * i, 160, 100};
+                SDL_RenderFillRect(renderer, &rect); 
+            }              
+        }
+        //printf("\n");
+    }
+}
 
 int main(int argc, char *argv[]) {
     // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) { 
         printf("SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     }
@@ -22,8 +39,8 @@ int main(int argc, char *argv[]) {
     SDL_Window *window = SDL_CreateWindow("Movable Window",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
-                                          640, 480,
-                                          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                                          1280, 800,
+                                          SDL_WINDOW_SHOWN);
     if (window == NULL) {
         printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
         SDL_Quit();
@@ -38,6 +55,20 @@ int main(int argc, char *argv[]) {
         SDL_Quit();
         return 1;
     }
+
+    //Variables
+    int array[8][8] = {
+        {0,0,1,0,0,1,0,0},
+        {0,0,1,0,0,1,0,0},
+        {0,0,1,0,0,1,0,0},
+        {0,0,1,1,1,1,0,0},
+        {0,0,1,1,1,1,0,0},
+        {0,0,1,0,0,1,0,0},
+        {0,0,1,0,0,1,0,0},
+        {0,0,1,0,0,1,0,0}
+    };
+
+
 
     // Main loop
     SDL_bool running = SDL_TRUE;
@@ -77,10 +108,12 @@ int main(int argc, char *argv[]) {
      SDL_RenderClear(renderer);
 
     // Set the draw color to red and draw a filled rectangle
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_Rect rect = {100, 100, 200, 150};
-    SDL_RenderFillRect(renderer, &rect);
+    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    //SDL_Rect rect = {100, 100, 200, 150};
+    //SDL_RenderFillRect(renderer, &rect);
 
+    
+        makeWall(array, renderer);
     // Update the screen
     SDL_RenderPresent(renderer);
 
