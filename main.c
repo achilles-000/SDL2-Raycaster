@@ -2,6 +2,9 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 
+
+void makeWall() // make it point to an array
+
 int main(int argc, char *argv[]) {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -69,14 +72,6 @@ int main(int argc, char *argv[]) {
                     break;
             }
         }
-
-        SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-            if (!renderer) {
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
 
      SDL_SetRenderDrawColor(renderer, 0, 0 ,0, 255);
      SDL_RenderClear(renderer);
