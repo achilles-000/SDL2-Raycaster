@@ -3,6 +3,9 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <math.h>
+
 
 
 void makeWall(int array[8][8], SDL_Renderer *renderer){
@@ -14,16 +17,44 @@ void makeWall(int array[8][8], SDL_Renderer *renderer){
         for(int j = 0; j < 8; j++){
             if (array[i][j] == 1 ){
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_Rect rect = {width * j, height * i, width, height};
-                SDL_RenderFillRect(renderer, &rect);               //print wall
+                SDL_Rect rect = {100 * j, 100 * i, width, height};
+                SDL_RenderFillRect(renderer, &rect);               
             }
+            /*
             else {
                 SDL_SetRenderDrawColor(renderer, 125, 125, 125, 255);
-                SDL_Rect rect = {width * j, height * i, width, height};
+                SDL_Rect rect = {100 * j, 100 * i, width, height};
                 SDL_RenderFillRect(renderer, &rect); 
-            }              
+            }       
+            */       
         }
     }
+}
+
+void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *cy, double *a, bool rotateRight, bool rotateLeft){
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    int radius = 50;
+    int speedY = 3;
+    double rx = 0.0;
+    double ry = 0.0;
+
+
+    rx = radius*cos(*a);
+    ry = radius*sin(*a);
+
+    if(forward == true) *cy -= speedY; // this is just wrong
+    if(forward == true) *cx -= speedY;
+    if(backward == true) *cy += speedY;
+    if(backward == true) *cx += speedY;
+    if(rotateRight == true) *a += 0.01;
+    if(rotateLeft == true) *a -= 0.01;
+
+    SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx + ry, *cy - rx); //1-2
+    SDL_RenderDrawLine(renderer, *cx + ry, *cy - rx, *cx - rx, *cy - ry); //2-3
+    SDL_RenderDrawLine(renderer, *cx - rx, *cy - ry, *cx - ry, *cy + rx); //3-4
+    SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx - ry, *cy + rx); //1-4
+
 }
 
 int main(int argc, char* argv[]) {
@@ -71,16 +102,28 @@ int main(int argc, char* argv[]) {
     }
 
     //Variables
+
+    bool forward = false;
+    bool backward = false;
+    bool rotateRight = false;
+    bool rotateLeft = false;
+    int speedY = 3;
+    int cx = 400;
+    int cy = 200;
+    double a = 0.0;
+
     int array[8][8] = {
-        {0,0,0,0,0,0,0,0},
-        {0,1,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,1,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0}
+        {1,1,1,1,1,1,1,1},
+        {0,0,0,0,0,0,0,1},
+        {0,0,0,0,0,1,0,1},
+        {0,0,0,0,0,0,0,1},
+        {0,0,0,0,0,0,0,1},
+        {0,0,0,0,0,0,0,1},
+        {0,1,0,0,0,0,0,1},
+        {0,0,0,0,0,0,0,1}
     };
+
+
 
 
 
@@ -113,12 +156,44 @@ int main(int argc, char* argv[]) {
                         }
                     }
                     break;
+
+                case SDL_KEYDOWN: {
+                    if (event.key.keysym.sym == SDLK_w) {
+                        forward = true;
+                    }
+                    if (event.key.keysym.sym == SDLK_s) {
+                        backward = true;
+                    }
+                    if (event.key.keysym.sym == SDLK_d) {
+                        rotateRight = true;
+                    }
+                    if (event.key.keysym.sym == SDLK_a) {
+                        rotateLeft = true;
+                    }
+                    break;
+
+                }
+                case SDL_KEYUP: {
+                    if (event.key.keysym.sym == SDLK_w) {
+                        forward = false;
+                    }
+                    if (event.key.keysym.sym == SDLK_s) {
+                        backward = false;
+                    }
+                    if (event.key.keysym.sym == SDLK_d) {
+                        rotateRight = false;
+                    }
+                    if (event.key.keysym.sym == SDLK_a) {
+                        rotateLeft = false;
+                    }
+                    break;
+                }
                 default:
                     break;
             }
         }
 
-     SDL_SetRenderDrawColor(renderer, 0, 0 ,0, 255);
+     SDL_SetRenderDrawColor(renderer, 255, 0 ,0, 255);
      SDL_RenderClear(renderer);
 
     // Set the draw color to red and draw a filled rectangle
@@ -127,7 +202,19 @@ int main(int argc, char* argv[]) {
     //SDL_RenderFillRect(renderer, &rect);
 
     
-        makeWall(array, renderer);
+    makeWall(array, renderer);
+    //player(forward, backward, renderer, &x , &y , speedY);
+
+
+
+
+
+    player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
+
+
+
+
+
     // Update the screen
     SDL_RenderPresent(renderer);
 
