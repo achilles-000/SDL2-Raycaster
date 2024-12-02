@@ -34,8 +34,8 @@ void makeWall(int array[8][8], SDL_Renderer *renderer){
 void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *cy, double *a, bool rotateRight, bool rotateLeft){
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    int radius = 50;
-    int speedY = 3;
+    int radius = 25;
+    int speed = 2;
     double rx = 0.0;
     double ry = 0.0;
 
@@ -43,10 +43,20 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
     rx = radius*cos(*a);
     ry = radius*sin(*a);
 
-    if(forward == true) *cy -= speedY; // this is just wrong
-    if(forward == true) *cx -= speedY;
-    if(backward == true) *cy += speedY;
-    if(backward == true) *cx += speedY;
+    //printf("\ncos: %lf ", rx);
+    //printf(" sin: %lf ", ry);
+    //printf(" a: %lf ", *a);
+
+    if(forward){
+        *cx += speed * cos(*a + 3.931);
+        *cy += speed *sin(*a + 3.931);
+    }
+    if(backward){
+        *cx -= speed * cos(*a + 3.931);
+        *cy -= speed *sin(*a + 3.931);
+    }
+
+
     if(rotateRight == true) *a += 0.01;
     if(rotateLeft == true) *a -= 0.01;
 
@@ -54,6 +64,7 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
     SDL_RenderDrawLine(renderer, *cx + ry, *cy - rx, *cx - rx, *cy - ry); //2-3
     SDL_RenderDrawLine(renderer, *cx - rx, *cy - ry, *cx - ry, *cy + rx); //3-4
     SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx - ry, *cy + rx); //1-4
+
 
 }
 
@@ -110,7 +121,7 @@ int main(int argc, char* argv[]) {
     int speedY = 3;
     int cx = 400;
     int cy = 200;
-    double a = 0.0;
+    double a = 3.931;
 
     int array[8][8] = {
         {1,1,1,1,1,1,1,1},
