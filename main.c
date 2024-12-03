@@ -32,6 +32,19 @@ void makeWall(int array[8][8], SDL_Renderer *renderer){
     }
 }
 
+void isWall(int array[8][8], int *row, int *column){
+    for (int i = 0; i < 8; i++ ){
+        for (int j = 0; j < 8; j++){
+            if(array[i][j] == 1){
+                *row = i;
+                *column = j;
+                return;
+            }
+        }
+    }
+}
+
+
 void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *cy, double *a, bool rotateRight, bool rotateLeft){
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
@@ -66,17 +79,10 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
 
 }
 
-void castRay(SDL_Renderer *renderer, int cx, int cy, int a){
-    int numRays = 10;
-    int rayAngle = (FOV * (180/M_PI));
-    double numWidth = (rayAngle / numRays);
-    int b = rayAngle;
+void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
+    int row, column;
 
-    for(int i = 0; i < numRays; i++){
-        
-        SDL_RenderDrawLine(renderer, cx, cy, cx + 100*cos(rayAngle) , cy + 100*sin(rayAngle) );
-        rayAngle += b;
-    }
+
 
 
 }
@@ -139,15 +145,17 @@ int main(int argc, char* argv[]) {
     int cy = 200;
     double a = 3.931;
 
+        int row, column;
+
     int array[8][8] = {
         {1,1,1,1,1,1,1,1},
-        {0,0,0,0,0,0,0,1},
-        {0,0,0,0,0,1,0,1},
-        {0,0,0,0,0,0,0,1},
-        {0,0,0,0,0,0,0,1},
-        {0,0,0,0,0,0,0,1},
-        {0,1,0,0,0,0,0,1},
-        {0,0,0,0,0,0,0,1}
+        {1,0,0,0,0,0,0,1},
+        {1,0,0,0,0,1,0,1},
+        {1,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,1},
+        {1,1,0,0,0,0,0,1},
+        {1,1,1,1,1,1,1,1}
     };
 
 
@@ -229,11 +237,15 @@ int main(int argc, char* argv[]) {
     //SDL_RenderFillRect(renderer, &rect);
 
     
-    makeWall(array, renderer);
+    //makeWall(array, renderer);
 
-    player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
+    //player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
 
-    castRay(renderer, cx, cy, a);
+    //castRay(renderer, cx, cy, a, array);
+
+    isWall(array, &row, &column);
+
+    printf("i: %d j: %d ", row, column);
 
 
 
