@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <math.h>
 
+#define FOV 90
 
 
 void makeWall(int array[8][8], SDL_Renderer *renderer){
@@ -36,9 +37,8 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
 
     int radius = 25;
     int speed = 2;
-    double rx = 0.0;
-    double ry = 0.0;
-
+    double rx;
+    double ry;
 
     rx = radius*cos(*a);
     ry = radius*sin(*a);
@@ -56,7 +56,6 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
         *cy -= speed *sin(*a + 3.931);
     }
 
-
     if(rotateRight == true) *a += 0.01;
     if(rotateLeft == true) *a -= 0.01;
 
@@ -65,8 +64,25 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
     SDL_RenderDrawLine(renderer, *cx - rx, *cy - ry, *cx - ry, *cy + rx); //3-4
     SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx - ry, *cy + rx); //1-4
 
+}
+
+void castRay(SDL_Renderer *renderer, int cx, int cy, int a){
+    int numRays = 10;
+    int rayAngle = (FOV * (180/M_PI));
+    double numWidth = (rayAngle / numRays);
+    int b = rayAngle;
+
+    for(int i = 0; i < numRays; i++){
+        
+        SDL_RenderDrawLine(renderer, cx, cy, cx + 100*cos(rayAngle) , cy + 100*sin(rayAngle) );
+        rayAngle += b;
+    }
+
 
 }
+
+
+
 
 int main(int argc, char* argv[]) {
     // Initialize SDL
@@ -214,13 +230,10 @@ int main(int argc, char* argv[]) {
 
     
     makeWall(array, renderer);
-    //player(forward, backward, renderer, &x , &y , speedY);
-
-
-
-
 
     player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
+
+    castRay(renderer, cx, cy, a);
 
 
 
