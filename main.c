@@ -82,6 +82,7 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
 void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int row, column;
 
+    while (1);
 
 
 
@@ -237,15 +238,15 @@ int main(int argc, char* argv[]) {
     //SDL_RenderFillRect(renderer, &rect);
 
     
-    //makeWall(array, renderer);
+    makeWall(array, renderer);
 
-    //player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
+    player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
 
-    //castRay(renderer, cx, cy, a, array);
+    castRay(renderer, cx, cy, a, array);
 
     isWall(array, &row, &column);
 
-    printf("i: %d j: %d ", row, column);
+
 
 
 
