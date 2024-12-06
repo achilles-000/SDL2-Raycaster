@@ -53,12 +53,17 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
     double rx;
     double ry;
 
+     *a = fmod(*a, 2 * M_PI);
+        if (*a < 0) *a += 2 * M_PI;
+
     rx = radius*cos(*a);
     ry = radius*sin(*a);
 
     //printf("\ncos: %lf ", rx);
     //printf(" sin: %lf ", ry);
     //printf(" a: %lf ", *a);
+
+    
 
     if(forward){
         *cx += speed * cos(*a + 3.931);
@@ -69,8 +74,8 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
         *cy -= speed *sin(*a + 3.931);
     }
 
-    if(rotateRight == true) *a += 0.01;
-    if(rotateLeft == true) *a -= 0.01;
+    if(rotateRight == true) *a += 0.05;
+    if(rotateLeft == true) *a -= 0.05;
 
     SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx + ry, *cy - rx); //1-2
     SDL_RenderDrawLine(renderer, *cx + ry, *cy - rx, *cx - rx, *cy - ry); //2-3
@@ -82,7 +87,7 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
 void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int row, column;
 
-    while (1);
+    //while (1);
 
 
 
