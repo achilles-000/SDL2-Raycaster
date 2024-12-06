@@ -86,8 +86,20 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
 
 void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int row, column;
+    int lineX = 300;
+    int lineY = 20;
+    
 
     //while (1);
+    printf("\n a: %lf ", a);
+    printf("\n c: %lf ", cos(a) );
+    printf("\n s: %lf ", sin(a) );
+    for(int i = 0; i < 400; i++){
+        SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
+    }
+
+
+
 
 
 
