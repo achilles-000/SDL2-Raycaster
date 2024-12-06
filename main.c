@@ -32,13 +32,16 @@ void makeWall(int array[8][8], SDL_Renderer *renderer){
     }
 }
 
-void isWall(int array[8][8], int *row, int *column){
+void isWall(int array[8][8], int wallPositions[64][2], int *wallCount){
+
+    *wallCount = 0;
+
     for (int i = 0; i < 8; i++ ){
         for (int j = 0; j < 8; j++){
             if(array[i][j] == 1){
-                *row = i;
-                *column = j;
-                return;
+                wallPositions[*wallCount][0] = i;
+                wallPositions[*wallCount][1] = j;
+                (*wallCount)++;
             }
         }
     }
@@ -88,6 +91,13 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int row, column;
     int lineX = 300;
     int lineY = 20;
+    int wallCount;
+    int wallPositions[64][2];
+    int i = 0, j = 0;
+    int xLocation, yLocation;
+
+
+    isWall(array, wallPositions, &wallCount);
     
 
     //while (1);
@@ -99,7 +109,18 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     }
 
 
+    while(1){
+        if ( xLocation != wallPositions[i][0])
+            i++;
+        j++;
+        xLocation = i / 100;
+        yLocation = i / 100;
 
+
+
+
+        
+    }
 
 
 
@@ -162,6 +183,8 @@ int main(int argc, char* argv[]) {
     int cx = 400;
     int cy = 200;
     double a = 3.931;
+ // Maximum possible walls (8x8 grid)
+
 
         int row, column;
 
@@ -175,6 +198,15 @@ int main(int argc, char* argv[]) {
         {1,1,0,0,0,0,0,1},
         {1,1,1,1,1,1,1,1}
     };
+
+/*
+
+    printf("Walls found at:\n");
+    for (int i = 0; i < wallCount; i++) {
+        printf("(%d, %d)\n", wallPositions[i][0], wallPositions[i][1]);
+    }
+
+    */
 
 
 
@@ -261,7 +293,7 @@ int main(int argc, char* argv[]) {
 
     castRay(renderer, cx, cy, a, array);
 
-    isWall(array, &row, &column);
+
 
 
 
