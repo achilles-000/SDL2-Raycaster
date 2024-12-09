@@ -77,8 +77,8 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
         *cy -= speed *sin(*a + 3.931);
     }
 
-    if(rotateRight == true) *a += 0.05;
-    if(rotateLeft == true) *a -= 0.05;
+    if(rotateRight == true) *a += 0.01;
+    if(rotateLeft == true) *a -= 0.01;
 
     SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx + ry, *cy - rx); //1-2
     SDL_RenderDrawLine(renderer, *cx + ry, *cy - rx, *cx - rx, *cy - ry); //2-3
@@ -101,25 +101,25 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     
 
     //while (1);
-    printf("\n a: %lf ", a);
-    printf("\n c: %lf ", cos(a) );
-    printf("\n s: %lf ", sin(a) );
+    //printf("\n a: %lf ", a);
+    //printf("\n c: %lf ", cos(a) );
+    //printf("\n s: %lf ", sin(a) );
     for(int i = 0; i < 400; i++){
         SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
     }
 
 
-    while(1){
-        if ( xLocation != wallPositions[i][0])
+    while(0){
+        if ( xLocation != wallPositions[i][0] && yLocation != wallPositions[i][1]){
             i++;
-        j++;
-        xLocation = i / 100;
-        yLocation = i / 100;
+            j++;
+            xLocation = i / 100;
+            yLocation = i / 100;
 
 
 
 
-        
+        }
     }
 
 
