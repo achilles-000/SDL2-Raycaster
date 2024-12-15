@@ -7,6 +7,8 @@
 #include <math.h>
 
 #define FOV 90
+#define WIDTH 800
+#define HEIGHT 800
 
 
 void makeWall(int array[8][8], SDL_Renderer *renderer){
@@ -62,11 +64,6 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
     rx = radius*cos(*a);
     ry = radius*sin(*a);
 
-    //printf("\ncos: %lf ", rx);
-    //printf(" sin: %lf ", ry);
-    //printf(" a: %lf ", *a);
-
-    
 
     if(forward){
         *cx += speed * cos(*a + 3.931);
@@ -94,107 +91,19 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int length = 0;
     int xRayLocation, yRayLocation;
 
+    while(length < 1600){
+        xRayLocation = (cx + length * cos(a + 3.931));
+        yRayLocation = (cy + length * sin(a + 3.931));
+        xLocation = xRayLocation / 100;
+        yLocation = yRayLocation / 100;
 
-    isWall(array, wallPositions, &wallCount);
-    
-
-    //while (1);
-    //printf("\n a: %lf ", a);
-    //printf("\n c: %lf ", cos(a) );
-    //printf("\n s: %lf ", sin(a) );
-
-    //Makes the line
-
-    /*
-    for(int i = 0; i < 400; i++){
-
-        int location = i / 100;
-        for (int j = 0; j < 64; j++){
-            if( location != wallPositions[j][0] && location != wallPositions[j][1])
-                SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
+        if(array[yLocation][xLocation] == 1){
+            SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+            break; 
         }
-
-    }
-    */
-
-    /*        int location = i / 100;
-        for ( j = 0; j < 64; j++){
-            if( j == wallPositions[j][0] || j == wallPositions[j][1] )
-                SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
-                printf("\n true");
-        }*/
-       /*
-    printf("Walls found at:\n");
-    for (int i = 0; i < wallCount; i++) {
-        printf("(%d, %d)\n", wallPositions[i][0], wallPositions[i][1]);
-    }
-    */
-
-
-while(length < 1600){
-    xRayLocation = (cx + length * cos(a + 3.931));
-    yRayLocation = (cy + length * sin(a + 3.931));
-    xLocation = xRayLocation / 100;
-    yLocation =yRayLocation / 100;
-
-    if(array[yLocation][xLocation] == 1){
-        SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
-        break;
-
-        
-    }
-    
 
     length++;
-}
-
-
-
-/*
-   printf("\n xLocation: %d, yLocation: %d", xLocation, yLocation);
-   bool hitWall = false;
-
-
-    for(int i = 0; i < wallCount; i++){
-        for( int j = 0; j < wallCount; j++){
-            if( yLocation == wallPositions[i][0] && xLocation == wallPositions[i][1]){
-               // SDL_RenderDrawLine(renderer, cx, cy, (cx - 12) + length * cos(a + 3.931), (cy- 12) + length * sin(a + 3.931)); 
-
-
-
-                //printf("\n True");
-                //hitWall = true;
-                //break; 
-            }
-            else if(yLocation != wallPositions[i][0] && xLocation != wallPositions[i][1]){
-                //SDL_RenderDrawLine(renderer, cx, cy,( cx + length * cos(a + 3.931) ), (cy + length * sin(a + 3.931)) );
-                hitWall = true;
-                printf("\n True");
-                while(hitWall){
-                    SDL_RenderDrawLine(renderer, cx, cy,( cx + length * cos(a + 3.931) ), (cy + length * sin(a + 3.931)) );
-                    length++;
-                    if(length > 1600) break;
-                }
-                
-            }
-        }
-        
     }
-       xLocation = (cx + length * cos(a + 3.931)) / 100;
-   yLocation = (cy + length * sin(a + 3.931)) / 100;
-
-    if (!hitWall) {
-    printf("\n No wall detected at current location.");
-    }
-    */
-
-
-
-
-
-
-
-
 }
 
 
@@ -224,11 +133,7 @@ int main(int argc, char* argv[]) {
     
 
     // Create a window
-    SDL_Window *window = SDL_CreateWindow("Movable Window",
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          800, 800,
-                                          SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("Movable Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
         SDL_Quit();
@@ -349,14 +254,8 @@ int main(int argc, char* argv[]) {
             }
         }
 
-     SDL_SetRenderDrawColor(renderer, 255, 0 ,0, 255);
-     SDL_RenderClear(renderer);
-
-    // Set the draw color to red and draw a filled rectangle
-    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    //SDL_Rect rect = {100, 100, 200, 150};
-    //SDL_RenderFillRect(renderer, &rect);
-
+    SDL_SetRenderDrawColor(renderer, 255, 0 ,0, 255);
+    SDL_RenderClear(renderer);
     
     makeWall(array, renderer);
 
@@ -364,19 +263,8 @@ int main(int argc, char* argv[]) {
 
     castRay(renderer, cx, cy, a, array);
 
-
-
-
-
-
-
-
-
     // Update the screen
     SDL_RenderPresent(renderer);
-
-
-
 
     }
 
