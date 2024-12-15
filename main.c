@@ -95,6 +95,7 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int wallPositions[64][2];
     int i = 0, j = 0;
     int xLocation, yLocation;
+    int length = 100;
 
 
     isWall(array, wallPositions, &wallCount);
@@ -104,9 +105,63 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     //printf("\n a: %lf ", a);
     //printf("\n c: %lf ", cos(a) );
     //printf("\n s: %lf ", sin(a) );
+
+    //Makes the line
+
+    /*
     for(int i = 0; i < 400; i++){
-        SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
+
+        int location = i / 100;
+        for (int j = 0; j < 64; j++){
+            if( location != wallPositions[j][0] && location != wallPositions[j][1])
+                SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
+        }
+
     }
+    */
+
+    /*        int location = i / 100;
+        for ( j = 0; j < 64; j++){
+            if( j == wallPositions[j][0] || j == wallPositions[j][1] )
+                SDL_RenderDrawLine(renderer, cx, cy, cx + i*cos(a + 3.931), cy + i * sin(a + 3.931));
+                printf("\n true");
+        }*/
+       /*
+    printf("Walls found at:\n");
+    for (int i = 0; i < wallCount; i++) {
+        printf("(%d, %d)\n", wallPositions[i][0], wallPositions[i][1]);
+    }
+    */
+   xLocation = (cx + length * cos(a + 3.931)) / 100;
+   yLocation = (cy + length * sin(a + 3.931)) / 100;
+
+   printf("\n xLocation: %d, yLocation: %d", xLocation, yLocation);
+   bool hitWall = false;
+
+
+    for(int i = 0; i < wallCount; i++){
+        for( int j = 0; j < wallCount; j++){
+            if( yLocation == wallPositions[i][0] && xLocation == wallPositions[i][1]){
+                //SDL_RenderDrawLine(renderer, cx, cy, (cx + length * cos(a + 3.931)) - 50, (cy + length * sin(a + 3.931)) - 50);
+                printf("\n True");
+                hitWall = true;
+                break;  
+            }
+            else if(yLocation != wallPositions[i][0] && xLocation != wallPositions[i][1]){
+                SDL_RenderDrawLine(renderer, cx, cy,( cx + length * cos(a + 3.931)) - 1, (cy + length * sin(a + 3.931)) - 1);
+            }
+        }
+        
+    }
+
+    if (!hitWall) {
+    printf("\n No wall detected at current location.");
+    }
+
+
+
+
+
 
 
     while(0){
