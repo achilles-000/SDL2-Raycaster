@@ -90,19 +90,29 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int xLocation, yLocation;
     int length = 0;
     int xRayLocation, yRayLocation;
+    double sections = 20;
+    double angle = FOV / sections;
+    double x;
 
-    while(length < 1600){
-        xRayLocation = (cx + length * cos(a + 3.931));
-        yRayLocation = (cy + length * sin(a + 3.931));
-        xLocation = xRayLocation / 100;
-        yLocation = yRayLocation / 100;
+    while(length < WIDTH){
+            for(int i = 0; i < sections; i++){
 
-        if(array[yLocation][xLocation] == 1){
-            SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
-            break; 
-        }
+                xRayLocation = (cx + length * cos(a + 3.931)) + x;
+                yRayLocation = (cy + length * sin(a + 3.931));
+                xLocation = xRayLocation / 100;
+                yLocation = yRayLocation / 100;
 
-    length++;
+                if(array[yLocation][xLocation] == 1){
+             
+                    SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+
+                    x += angle;
+
+                    break; 
+                }
+            }
+
+        length++;
     }
 }
 
