@@ -89,7 +89,7 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int wallPositions[64][2];
     int xLocation, yLocation;
     int length = 0;
-    int xRayLocation, yRayLocation;
+    double xRayLocation, yRayLocation;
     double sections = 20;
     double angle = FOV / sections;
     double x;
@@ -97,8 +97,10 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     while(length < WIDTH){
             for(int i = 0; i < sections; i++){
 
-                xRayLocation = (cx + length * cos(a + 3.931)) + x;
-                yRayLocation = (cy + length * sin(a + 3.931));
+                xRayLocation = (cx + length * cos(a + 3.931 ));
+                yRayLocation = (cy + length * sin(a + 3.931 ));
+            //printf("%lf ", a);
+                //printf("\n xRay: %d yRay: %d" ,xRayLocation, yLocation);
                 xLocation = xRayLocation / 100;
                 yLocation = yRayLocation / 100;
 
