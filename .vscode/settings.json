@@ -2,6 +2,7 @@
     "files.associations": {
         "sdl_image.h": "c",
         "sdl.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "cmath": "c"
     }
 }

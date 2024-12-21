@@ -90,31 +90,36 @@ void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
     int xLocation, yLocation;
     int length = 0;
     double xRayLocation, yRayLocation;
-    double sections = 20;
-    double angle = FOV / sections;
-    double x;
+    double sections = 40;
+    double angle = (FOV * (M_PI / 180)) / sections;
+    double x;  
+    double rayAngle;
 
-    while(length < WIDTH){
-            for(int i = 0; i < sections; i++){
+    for(int i = 0; i <= sections; i++){
+        rayAngle = (a + 3.931) - (FOV * M_PI / 360) + (i * angle);
+        length = 0;
+    
 
-                xRayLocation = (cx + length * cos(a + 3.931 ));
-                yRayLocation = (cy + length * sin(a + 3.931 ));
-            //printf("%lf ", a);
-                //printf("\n xRay: %d yRay: %d" ,xRayLocation, yLocation);
-                xLocation = xRayLocation / 100;
-                yLocation = yRayLocation / 100;
+    
 
-                if(array[yLocation][xLocation] == 1){
-             
-                    SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+    while(length < WIDTH && length < HEIGHT){  // length < 1600
 
-                    x += angle;
 
-                    break; 
-                }
-            }
+        xRayLocation = (cx + length * cos(rayAngle));
+        yRayLocation = (cy + length * sin(rayAngle));
+        xLocation = xRayLocation / 100;
+        yLocation =yRayLocation / 100;
 
-        length++;
+        if(array[yLocation][xLocation] == 1){
+            SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+            break;
+        
+        }
+        
+    
+    length++;
+    }
+    
     }
 }
 
