@@ -11,6 +11,7 @@
 #define HEIGHT 800
 
 
+//Can also delete or since it isnt necessary
 void makeWall(int array[8][8], SDL_Renderer *renderer){
 
     for(int i = 0; i < 8; i++){
@@ -34,6 +35,7 @@ void makeWall(int array[8][8], SDL_Renderer *renderer){
     }
 }
 
+//Can delete is never used
 void isWall(int array[8][8], int wallPositions[64][2], int *wallCount){
 
     *wallCount = 0;
@@ -85,41 +87,92 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
 }
 
 void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
-    int wallCount;
-    int wallPositions[64][2];
     int xLocation, yLocation;
-    int length = 0;
+    int length;
     double xRayLocation, yRayLocation;
     double sections = 40;
-    double angle = (FOV * (M_PI / 180)) / sections;
-    double x;  
-    double rayAngle;
+    double angle = (FOV * (M_PI / 180)) / sections; 
+    double rayAngle = 0;
 
     for(int i = 0; i <= sections; i++){
         rayAngle = (a + 3.931) - (FOV * M_PI / 360) + (i * angle);
         length = 0;
-    
 
-    
+        while(length < WIDTH && length < HEIGHT){  // Or length < 1600
 
-    while(length < WIDTH && length < HEIGHT){  // length < 1600
+            xRayLocation = (cx + length * cos(rayAngle));
+            yRayLocation = (cy + length * sin(rayAngle));
+            xLocation = xRayLocation / 100;
+            yLocation = yRayLocation / 100;
 
-
-        xRayLocation = (cx + length * cos(rayAngle));
-        yRayLocation = (cy + length * sin(rayAngle));
-        xLocation = xRayLocation / 100;
-        yLocation =yRayLocation / 100;
-
-        if(array[yLocation][xLocation] == 1){
-            SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
-            break;
+            if(array[yLocation][xLocation] == 1){
+                SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+                break;
         
+
+            }
+        
+    
+        length++;
         }
+    }
+}
+
+void makeWall3D(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
+    int xLocation, yLocation;
+    int length;
+    double xRayLocation, yRayLocation;
+    double sections = 40;
+    double angle = (FOV * (M_PI / 180)) / sections; 
+    double rayAngle = 0;
+
+    //temp
+    double rayLength;
+    double rectWidth;
+    double rectHeight;
+
+    for(int i = 0; i <= sections; i++){
+        rayAngle = (a + 3.931) - (FOV * M_PI / 360) + (i * angle);
+        length = 0;
+
+        while(length < WIDTH && length < HEIGHT){  // Or length < 1600
+
+            xRayLocation = (cx + length * cos(rayAngle));
+            yRayLocation = (cy + length * sin(rayAngle));
+            xLocation = xRayLocation / 100;
+            yLocation = yRayLocation / 100;
+
+
+            //Find Length of Ray
+            rayLength = sqrt(pow((cx - xRayLocation), 2) + pow((cy - yRayLocation), 2));
+            
+
+            //Find width
+            rectWidth = rayLength * sin(rayAngle);
+
+
+            //Find Height
+            rectHeight = (tan((FOV * (M_PI / 360))) * rayLength) + (tan((FOV * (M_PI / 360))) * rayLength);
+
+            //Find (x,y) coordinates of where the rectage should be
+
+            if(array[yLocation][xLocation] == 1){
+                SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+
+                if((rayLength / 40) * i < 400){
+                SDL_Rect rect = { (WIDTH / sections) * i, (rayLength / 40) * i, rectWidth, rectHeight };  // x, y, width, height
+                SDL_SetRenderDrawColor(renderer, 0, 123, 0, 255);  // Red color
+                SDL_RenderFillRect(renderer, &rect);  // Draw filled rectangle
+                }
+
+                break;
+        
+
+            }
         
     
-    length++;
-    }
-    
+        length++;
+        }
     }
 }
 
@@ -274,11 +327,12 @@ int main(int argc, char* argv[]) {
     SDL_SetRenderDrawColor(renderer, 255, 0 ,0, 255);
     SDL_RenderClear(renderer);
     
-    makeWall(array, renderer);
+    //makeWall(array, renderer);
 
     player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
 
-    castRay(renderer, cx, cy, a, array);
+    //castRay(renderer, cx, cy, a, array);
+    makeWall3D(renderer, cx, cy, a, array);
 
     // Update the screen
     SDL_RenderPresent(renderer);
