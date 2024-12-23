@@ -6,11 +6,11 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define FOV 90
+#define FOV 60
 #define WIDTH 800
 #define HEIGHT 800
 
-
+/*
 //Can also delete or since it isnt necessary
 void makeWall(int array[8][8], SDL_Renderer *renderer){
 
@@ -30,10 +30,11 @@ void makeWall(int array[8][8], SDL_Renderer *renderer){
                 SDL_Rect rect = {100 * j, 100 * i, width, height};
                 SDL_RenderFillRect(renderer, &rect); 
             }       
-            */       
+                 
         }
     }
 }
+*/
 
 //Can delete is never used
 void isWall(int array[8][8], int wallPositions[64][2], int *wallCount){
@@ -76,14 +77,16 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
         *cy -= speed *sin(*a + 3.931);
     }
 
-    if(rotateRight == true) *a += 0.01;
-    if(rotateLeft == true) *a -= 0.01;
+    if(rotateRight == true) *a += 0.015;
+    if(rotateLeft == true) *a -= 0.015;
 
+/*
+    //For drawing a cube in 2d
     SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx + ry, *cy - rx); //1-2
     SDL_RenderDrawLine(renderer, *cx + ry, *cy - rx, *cx - rx, *cy - ry); //2-3
     SDL_RenderDrawLine(renderer, *cx - rx, *cy - ry, *cx - ry, *cy + rx); //3-4
     SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx - ry, *cy + rx); //1-4
-
+*/
 }
 
 void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
@@ -122,61 +125,54 @@ void makeWall3D(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8
     int xLocation, yLocation;
     int length;
     double xRayLocation, yRayLocation;
-    double sections = 40;
+    double sections = 200;
     double angle = (FOV * (M_PI / 180)) / sections; 
     double rayAngle = 0;
 
-    //temp
+    //For rectangle
     double rayLength;
     double rectWidth;
     double rectHeight;
+    double placeHolder;
 
     for(int i = 0; i <= sections; i++){
         rayAngle = (a + 3.931) - (FOV * M_PI / 360) + (i * angle);
         length = 0;
 
-        while(length < WIDTH && length < HEIGHT){  // Or length < 1600
+        while(length < WIDTH && length < HEIGHT){  // Or length < 800
 
             xRayLocation = (cx + length * cos(rayAngle));
             yRayLocation = (cy + length * sin(rayAngle));
+
+            //Ray coordinate
             xLocation = xRayLocation / 100;
             yLocation = yRayLocation / 100;
 
-
-            //Find Length of Ray
-            rayLength = sqrt(pow((cx - xRayLocation), 2) + pow((cy - yRayLocation), 2));
-            
-
-            //Find width
-            rectWidth = rayLength * sin(rayAngle);
-
-
-            //Find Height
-            rectHeight = (tan((FOV * (M_PI / 360))) * rayLength) + (tan((FOV * (M_PI / 360))) * rayLength);
-
-            //Find (x,y) coordinates of where the rectage should be
-
             if(array[yLocation][xLocation] == 1){
-                SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
+                //Find Length of the Ray
+                rayLength = (sqrt(pow((cx - xRayLocation), 2) + pow((cy - yRayLocation), 2)));
+            
+                //Find width
+                rectWidth = WIDTH / sections;
 
-                if((rayLength / 40) * i < 400){
-                SDL_Rect rect = { (WIDTH / sections) * i, (rayLength / 40) * i, rectWidth, rectHeight };  // x, y, width, height
-                SDL_SetRenderDrawColor(renderer, 0, 123, 0, 255);  // Red color
-                SDL_RenderFillRect(renderer, &rect);  // Draw filled rectangle
-                }
+                //Find Height
+                rectHeight = (120 * HEIGHT) / rayLength; 
 
+
+                //Find (x,y) coordinates of where the rectage should be
+                int topLeftX = (i * rectWidth);
+                int topLeftY = (HEIGHT / 2) - (rectHeight / 2);
+
+                SDL_Rect rect = { topLeftX, topLeftY, rectWidth, rectHeight }; 
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // Rectange colour (white)
+                SDL_RenderFillRect(renderer, &rect); 
+                
                 break;
-        
-
             }
-        
-    
         length++;
         }
     }
 }
-
-
 
 
 int main(int argc, char* argv[]) {
@@ -229,10 +225,7 @@ int main(int argc, char* argv[]) {
     int cx = 400;
     int cy = 200;
     double a = 3.931;
- // Maximum possible walls (8x8 grid)
-
-
-        int row, column;
+    int row, column;
 
     int array[8][8] = {
         {1,1,1,1,1,1,1,1},
@@ -240,22 +233,10 @@ int main(int argc, char* argv[]) {
         {1,0,0,0,0,1,0,1},
         {1,0,0,0,0,0,0,1},
         {1,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,1},
+        {1,0,0,0,1,1,1,1},
         {1,1,0,0,0,0,0,1},
         {1,1,1,1,1,1,1,1}
     };
-
-/*
-
-    printf("Walls found at:\n");
-    for (int i = 0; i < wallCount; i++) {
-        printf("(%d, %d)\n", wallPositions[i][0], wallPositions[i][1]);
-    }
-
-    */
-
-
-
 
 
     // Main loop
@@ -324,7 +305,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-    SDL_SetRenderDrawColor(renderer, 255, 0 ,0, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0 ,0, 255);
     SDL_RenderClear(renderer);
     
     //makeWall(array, renderer);
