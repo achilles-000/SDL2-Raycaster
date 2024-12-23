@@ -10,63 +10,15 @@
 #define WIDTH 800
 #define HEIGHT 800
 
-/*
-//Can also delete or since it isnt necessary
-void makeWall(int array[8][8], SDL_Renderer *renderer){
 
-    for(int i = 0; i < 8; i++){
-
-        int width = 100, height = 100;
-
-        for(int j = 0; j < 8; j++){
-            if (array[i][j] == 1 ){
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_Rect rect = {100 * j, 100 * i, width, height};
-                SDL_RenderFillRect(renderer, &rect);               
-            }
-            /*
-            else {
-                SDL_SetRenderDrawColor(renderer, 125, 125, 125, 255);
-                SDL_Rect rect = {100 * j, 100 * i, width, height};
-                SDL_RenderFillRect(renderer, &rect); 
-            }       
-                 
-        }
-    }
-}
-*/
-
-//Can delete is never used
-void isWall(int array[8][8], int wallPositions[64][2], int *wallCount){
-
-    *wallCount = 0;
-
-    for (int i = 0; i < 8; i++ ){
-        for (int j = 0; j < 8; j++){
-            if(array[i][j] == 1){
-                wallPositions[*wallCount][0] = i;
-                wallPositions[*wallCount][1] = j;
-                (*wallCount)++;
-            }
-        }
-    }
-}
 
 
 void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *cy, double *a, bool rotateRight, bool rotateLeft){
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    int radius = 25;
     int speed = 2;
-    double rx;
-    double ry;
 
      *a = fmod(*a, 2 * M_PI);
         if (*a < 0) *a += 2 * M_PI;
-
-    rx = radius*cos(*a);
-    ry = radius*sin(*a);
-
 
     if(forward){
         *cx += speed * cos(*a + 3.931);
@@ -80,45 +32,6 @@ void player(SDL_Renderer *renderer, bool forward, bool backward, int *cx, int *c
     if(rotateRight == true) *a += 0.015;
     if(rotateLeft == true) *a -= 0.015;
 
-/*
-    //For drawing a cube in 2d
-    SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx + ry, *cy - rx); //1-2
-    SDL_RenderDrawLine(renderer, *cx + ry, *cy - rx, *cx - rx, *cy - ry); //2-3
-    SDL_RenderDrawLine(renderer, *cx - rx, *cy - ry, *cx - ry, *cy + rx); //3-4
-    SDL_RenderDrawLine(renderer, *cx + rx, *cy + ry, *cx - ry, *cy + rx); //1-4
-*/
-}
-
-void castRay(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
-    int xLocation, yLocation;
-    int length;
-    double xRayLocation, yRayLocation;
-    double sections = 40;
-    double angle = (FOV * (M_PI / 180)) / sections; 
-    double rayAngle = 0;
-
-    for(int i = 0; i <= sections; i++){
-        rayAngle = (a + 3.931) - (FOV * M_PI / 360) + (i * angle);
-        length = 0;
-
-        while(length < WIDTH && length < HEIGHT){  // Or length < 1600
-
-            xRayLocation = (cx + length * cos(rayAngle));
-            yRayLocation = (cy + length * sin(rayAngle));
-            xLocation = xRayLocation / 100;
-            yLocation = yRayLocation / 100;
-
-            if(array[yLocation][xLocation] == 1){
-                SDL_RenderDrawLine(renderer, cx, cy, xRayLocation , yRayLocation );
-                break;
-        
-
-            }
-        
-    
-        length++;
-        }
-    }
 }
 
 void makeWall3D(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8]){
@@ -158,7 +71,6 @@ void makeWall3D(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8
                 //Find Height
                 rectHeight = (120 * HEIGHT) / rayLength; 
 
-
                 //Find (x,y) coordinates of where the rectage should be
                 int topLeftX = (i * rectWidth);
                 int topLeftY = (HEIGHT / 2) - (rectHeight / 2);
@@ -169,11 +81,10 @@ void makeWall3D(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8
                 
                 break;
             }
-        length++;
+            length++;
         }
     }
 }
-
 
 int main(int argc, char* argv[]) {
     // Initialize SDL
@@ -195,9 +106,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-
-    
-
     // Create a window
     SDL_Window *window = SDL_CreateWindow("Movable Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
@@ -216,16 +124,14 @@ int main(int argc, char* argv[]) {
     }
 
     //Variables
-
     bool forward = false;
     bool backward = false;
     bool rotateRight = false;
     bool rotateLeft = false;
-    int speedY = 3;
     int cx = 400;
     int cy = 200;
-    double a = 3.931;
-    int row, column;
+    double a = 0;
+
 
     int array[8][8] = {
         {1,1,1,1,1,1,1,1},
@@ -238,6 +144,25 @@ int main(int argc, char* argv[]) {
         {1,1,1,1,1,1,1,1}
     };
 
+/*
+    int array[16][16] = {
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1},
+        {1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,1,1,1,1,0,0,0,0,0,1,0,1},
+        {1,1,0,0,0,0,0,1,0,0,0,0,0,1,0,1},
+        {1,1,0,0,0,0,0,1,0,0,0,0,0,1,0,1},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+    };
+*/
 
     // Main loop
     SDL_bool running = SDL_TRUE;
@@ -307,12 +232,9 @@ int main(int argc, char* argv[]) {
 
     SDL_SetRenderDrawColor(renderer, 0, 0 ,0, 255);
     SDL_RenderClear(renderer);
-    
-    //makeWall(array, renderer);
 
     player(renderer, forward, backward, &cx, &cy, &a, rotateRight, rotateLeft);
 
-    //castRay(renderer, cx, cy, a, array);
     makeWall3D(renderer, cx, cy, a, array);
 
     // Update the screen
