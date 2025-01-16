@@ -76,7 +76,7 @@ void makeWall3D(SDL_Renderer *renderer, int cx, int cy, double a, int array[8][8
                 int topLeftY = (HEIGHT / 2) - (rectHeight / 2);
 
                 SDL_Rect rect = { topLeftX, topLeftY, rectWidth, rectHeight }; 
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // Rectange colour (white)
+                SDL_SetRenderDrawColor(renderer, 255 - (rayLength / 8), 255 - (rayLength / 8), 255- (rayLength / 8), 255);  // Rectange colour (white)
                 SDL_RenderFillRect(renderer, &rect); 
                 
                 break;
